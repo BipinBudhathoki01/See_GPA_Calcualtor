@@ -1,6 +1,5 @@
 # SEE GPA Calculator for Nepali Students (Class 9 & 10)
 
-![Screenshot](https://screenshot.png)
 
 A responsive and user-friendly GPA calculator based on Nepal's SEE grading system, specially built for Class 9 and 10 students. The app supports both theoretical and practical subjects with customizable credit hours for accurate results.
 
