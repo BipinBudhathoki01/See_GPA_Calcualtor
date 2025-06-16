@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nepal GPA Calculator - Class 9 & 10</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #60ad5e;
+            --primary-dark: #005005;
+            --secondary: #f5f5f5;
+            --text: #333;
+            --border: #ddd;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 15px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+        
+        h1 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: var(--primary-light);
+            margin: 0 auto;
+        }
+        
+        .calculator-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .calculator-container {
+                flex-direction: row;
+            }
+            
+            .input-section {
+                flex: 1.5;
+            }
+            
+            .result-section {
+                flex: 1;
+            }
+        }
+        
+        .input-section, .result-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px var(--shadow);
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .subject-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        @media (min-width: 480px) {
+            .subject-row {
+                display: grid;
+                grid-template-columns: 2fr 1fr 2fr;
+                align-items: center;
+            }
+        }
+        
+        .subject-name {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+        
+        .practical-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 5px 0;
+        }
+        
+        .grade-selectors {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .grade-select {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background: white;
+            font-size: 0.9rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        @media (min-width: 480px) {
+            .btn-group {
+                flex-direction: row;
+            }
+        }
+        
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text);
+            flex: 1;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .result-box {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 10px;
+            color: white;
+            margin: 15px 0;
+            box-shadow: 0 2px 10px rgba(46, 125, 50, 0.3);
+        }
+        
+        .gpa-value {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1;
+            margin: 8px 0;
+        }
+        
+        .percentage {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 12px 0;
+        }
+        
+        .grade-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 8px 0;
+            color: #FFD700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subject-results {
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+        
+        .subject-result {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+            min-width: 350px;
+        }
+        
+        .result-header {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid white;
+            font-size: 0.9rem;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            padding: 15px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.8);
+            border-left: 4px solid var(--primary);
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+        
+        .mobile-warning {
+            display: block;
+            background: #ffeb3b;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-warning {
+                display: none;
+            }
+        }
+        
+        .subject-count {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .count-display {
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Nepal GPA Calculator</h1>
+            <p class="subtitle">For Class 9 & 10 Students - Accurate Nepali grading system</p>
+        </header>
+        
+        <div class="mobile-warning">
+            <i class="fas fa-mobile-alt"></i> Tip: Rotate your phone horizontally for better experience
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> How to Use:</h3>
+            <p><i class="fas fa-check-circle"></i> Enter subject names</p>
+            <p><i class="fas fa-check-circle"></i> Toggle "Has Practical" where needed</p>
+            <p><i class="fas fa-check-circle"></i> Select grades from dropdowns</p>
+            <p><i class="fas fa-check-circle"></i> Click "Calculate GPA" for results</p>
+        </div>
+        
+        <div class="calculator-container">
+            <div class="input-section">
+                <div class="subject-count">
+                    <h2 class="section-title">Enter Your Grades</h2>
+                    <div class="count-display">Subjects: <span id="subject-count">1</span></div>
+                </div>
+                
+                <div id="subjects-container">
+                    <!-- Subject rows will be added here -->
+                </div>
+                
+                <div class="btn-group">
+                    <button id="add-subject" class="btn-secondary"><i class="fas fa-plus"></i> Add Subject</button>
+                    <button id="calculate" class="btn-primary"><i class="fas fa-calculator"></i> Calculate GPA</button>
+                    <button id="reset" class="btn-secondary"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title">Your Results</h2>
+                
+                <div id="results-container">
+                    <div class="result-box">
+                        <p><i class="fas fa-star"></i> Overall GPA</p>
+                        <div class="gpa-value">0.00</div>
+                        <p>Grade Point Average</p>
+                    </div>
+                    
+                    <div class="result-box">
+                        <p><i class="fas fa-percentage"></i> Total Percentage</p>
+                        <div class="percentage">0%</div>
+                        <p>Grade</p>
+                        <div class="grade-display">NG</div>
+                    </div>
+                    
+                    <div class="subject-results">
+                        <div class="subject-result result-header">
+                            <span>Subject</span>
+                            <span>Total</span>
+                            <span>Grade</span>
+                            <span>GPA</span>
+                        </div>
+                        <div id="subject-results-container">
+                            <!-- Individual subject results will appear here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #4CAF50;"></div>
+                        <span>Theory (100 marks)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #2196F3;"></div>
+                        <span>Theory (75 marks)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #FF9800;"></div>
+                        <span>Practical (25 marks)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Designed for Class 9 & 10 students in Nepal | Accurate GPA calculation based on NEB grading system</p>
+            <p>© 2023 Nepal GPA Calculator | <i class="fas fa-mobile-alt"></i> Mobile Optimized</p>
+        </footer>
+    </div>
+
+    <script>
+const _0x1ce231=_0x2116;function _0x40d3(){const _0x490303=['JuZVq','.subject-n','PNKlF','calculate','Subject','DRKyC','lass=\x22prac','.percentag','HEWlb','style','checked','unt','ZfWGd','\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20','MxhJf','opdown','querySelec','iv>\x0a\x20\x20\x20\x20\x20\x20','\x20\x20\x20\x20\x20\x20<spa','target','innerHTML','wZwXA','display','getElement','none','cal','.theory-dr','t\x22>\x0a\x20\x20\x20\x20\x20\x20','MPmht','AVona','me\x22>\x0a\x20\x20\x20\x20\x20','ajNTJ','theoryWith','lass=\x22grad','sults-cont','dIXQJ','Eqluz','.grade-dis','8445227YHsLds','.subject-r','ical','MLhHD','down\x22\x20styl','DOMContent','755ToMWfO','.practical','iATRn','block','closest','actical\x22>\x0a','length','put\x20type=\x22','al\x0a\x20\x20\x20\x20\x20\x20\x20','qvCMh','AMhwL','/label>\x0a\x20\x20','oWvTz','value','oZYSc','forEach','aDvoD','\x20\x20\x20\x20\x20\x20','classList','192lAKFSm','e=\x22display','textConten','className','ical-toggl','class=\x22sub','\x20at\x20least\x20','luTxY','-dropdown','-name\x22\x20pla','\x20<select\x20c','reset','sk\x22></i>\x20H','WRPYu','859jGMDUB','Practical','30342tqRXEA','GeulA','arks','subject-ro','ontainer','LnYUJ','stener','one\x20subjec','\x20type=\x22che','UXoUc','s=\x22subject','\x20\x20\x20\x20<input','fas\x20fa-fla','acTbY','1179tvKboW','0.00','addEventLi','<option\x20va','FykWo','LJlVE','has-practi','Subject\x20na','57608TkipVH','jrrNx','ckbox\x22\x20cla','ypoxb','ject-resul','</option>','Loaded','ceholder=\x22','change','.gpa-value','\x20<label\x20cl','2070500yydzsy','RcqZD','\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20','Please\x20add','s\x22>\x0a\x20\x20\x20\x20\x20\x20','as\x20Practic','e-selector','\x20\x20\x20\x20','mboVu','\x20\x20\x20\x20\x20\x20\x20<in',':\x20none;\x22>\x0a','\x20\x20\x20\x20\x20<div\x20','CmfPU','createElem','subject-re','iRySY','\x20\x20\x20\x20<selec','NKjrE','\x20\x20<span>','play','HCPrc','<i\x20class=\x22','contains','t\x20class=\x22t','down\x22>\x0a\x20\x20\x20','dJayy','practicalM','\x20\x20</div>\x0a\x20','subjects-c','lue=\x22','\x20\x20\x20\x20\x20\x20\x20\x20\x20','</span>\x0a\x20\x20','osDPM','.has-pract','BYgkM','add-subjec','ById','ent','ame','682347zrNDQX','toFixed','subject-co','div','\x20\x20\x20\x20\x20\x20\x20\x20\x20<','HdKeU','nwnKm','nRXtw','heory-drop','tical-drop','text\x22\x20clas','KyPSF','ass=\x22pract','e\x22>\x0a\x20\x20\x20\x20\x20\x20','\x20</select>','torAll','tor','ss=\x22has-pr','fHCNj','click','outPractic','\x20\x20\x20\x20\x20\x20\x20</d','\x20\x20\x20\x20<div\x20c','appendChil','DdhBC','1815296TsOtgo','gQazm','mnVkw','ainer'];_0x40d3=function(){return _0x490303;};return _0x40d3();}(function(_0x4178d7,_0x19cfe3){const _0x40e1a1=_0x2116,_0x53717f=_0x4178d7();while(!![]){try{const _0xef5f68=parseInt(_0x40e1a1(0x1ba))/(0x2*-0xe4e+-0x630+0x97*0x3b)*(-parseInt(_0x40e1a1(0x1ac))/(0x155*-0xf+-0x1eb0+-0x32ad*-0x1))+parseInt(_0x40e1a1(0x150))/(-0x2656+-0x1d*-0xd+-0x1d8*-0x14)+-parseInt(_0x40e1a1(0x169))/(-0xebc+0x12e5+-0x1*0x425)+-parseInt(_0x40e1a1(0x199))/(-0x1*0xb59+-0x91f+0x147d)*(-parseInt(_0x40e1a1(0x1bc))/(-0x1*-0x1eaf+0x11f+-0xe2*0x24))+parseInt(_0x40e1a1(0x193))/(0x1af6+-0x14*-0xc5+-0xc5*0x37)+-parseInt(_0x40e1a1(0x1d2))/(-0x8*-0x335+0x15dd+-0x2f7d*0x1)*(parseInt(_0x40e1a1(0x1ca))/(0x1*-0x20bf+0xd2b*-0x1+0x2df3))+parseInt(_0x40e1a1(0x1dd))/(0xb59+0x527*-0x6+0x139b);if(_0xef5f68===_0x19cfe3)break;else _0x53717f['push'](_0x53717f['shift']());}catch(_0x2d0f3a){_0x53717f['push'](_0x53717f['shift']());}}}(_0x40d3,0x1b27d*0x1+-0x62*-0x46f+0xab819));const gradeMappings={'theoryWithPractical':{'A+':71.25,'A':63.745,'B+':56.245,'B':48.745,'C+':41.245,'C':33.745,'D':28.12,'NG':0x0},'theoryWithoutPractical':{'A+':0x5f,'A':0x55,'B+':0x4b,'B':0x41,'C+':0x37,'C':0x2d,'D':37.5,'NG':0x0},'practicalMarks':{'A+':23.75,'A':21.245,'B+':18.745,'B':16.245,'C+':13.745,'C':11.245,'D':9.37,'NG':0x0}};function totalMarksToGradePoint(_0x9237fd){const _0x49cc37=_0x2116,_0x1b8344={'MxhJf':function(_0x2aaec4,_0x2b3aa7){return _0x2aaec4>=_0x2b3aa7;},'DRKyC':function(_0x4f5fb0,_0x1912ef){return _0x4f5fb0>=_0x1912ef;},'mnVkw':function(_0x5ea23f,_0x4ec100){return _0x5ea23f>=_0x4ec100;},'iRySY':function(_0x3f2e0f,_0x56d7e8){return _0x3f2e0f>=_0x56d7e8;},'aDvoD':function(_0x53014f,_0x39f1a5){return _0x53014f>=_0x39f1a5;}};if(_0x1b8344[_0x49cc37(0x17b)](_0x9237fd,0x2329+-0x3*0x10f+-0x1fa2))return-0x1cc1*0x1+0xf*0x178+-0x73*-0xf;else{if(_0x1b8344[_0x49cc37(0x17b)](_0x9237fd,0x4*-0xd9+-0x9c5+0xd79*0x1))return-0x9ed+-0xc2*-0x6+-0x6*-0xe6+0.6000000000000001;else{if(_0x1b8344[_0x49cc37(0x17b)](_0x9237fd,0x198e+0x19*-0x125+0x1*0x355))return-0x11*0xee+0x13d4+-0x403+0.20000000000000018;else{if(_0x1b8344[_0x49cc37(0x172)](_0x9237fd,-0x26f8+0xb5*0x19+0x1587))return 0x30c+-0x4*0x329+-0x2*-0x4cd+0.7999999999999998;else{if(_0x1b8344[_0x49cc37(0x16b)](_0x9237fd,0x9a3*0x4+0x3d5+-0x2a2f))return 0xb29*0x2+-0x1ebe+0x86e*0x1+0.3999999999999999;else{if(_0x1b8344[_0x49cc37(0x138)](_0x9237fd,0x9*-0x3bd+0x2cf+0x1efe))return 0x5ed+0x1d50+-0x233b;else{if(_0x1b8344[_0x49cc37(0x1a9)](_0x9237fd,-0x18d2+0x92+0x185e))return 0x5*0x209+-0x62b*0x3+0x855+0.6000000000000001;else{if(_0x1b8344[_0x49cc37(0x1a9)](_0x9237fd,0x214a+0x140a+-0x8*0x6a8))return 0x2ea+0x2338+0x1*-0x2622+0.8;else return 0x10*0x20e+0x150+0x4*-0x88c;}}}}}}}}function totalMarksToGrade(_0x36d860){const _0x4263b8=_0x2116,_0x3c86a8={'dIXQJ':function(_0x3ac2ee,_0x268f8f){return _0x3ac2ee>=_0x268f8f;},'GeulA':function(_0x5c8d20,_0x9cf662){return _0x5c8d20>=_0x9cf662;}};if(_0x3c86a8[_0x4263b8(0x190)](_0x36d860,0x1e84+-0x11*-0x1d5+0x2b*-0x16d))return'A+';else{if(_0x3c86a8[_0x4263b8(0x190)](_0x36d860,-0x1b7f+0x2016+0x16d*-0x3))return'A';else{if(_0x3c86a8[_0x4263b8(0x190)](_0x36d860,0x196*0x15+-0xb9b+0x156d*-0x1))return'B+';else{if(_0x3c86a8[_0x4263b8(0x190)](_0x36d860,-0x6ef+-0x10b2+-0x1*-0x17dd))return'B';else{if(_0x3c86a8[_0x4263b8(0x190)](_0x36d860,-0xf3b+0x17*-0x16f+0x3066))return'C+';else{if(_0x3c86a8[_0x4263b8(0x190)](_0x36d860,-0x64b+-0x2525+0x3e*0xb4))return'C';else{if(_0x3c86a8[_0x4263b8(0x190)](_0x36d860,0x1d20+-0x9ec+-0x1316))return'D';else{if(_0x3c86a8[_0x4263b8(0x1bd)](_0x36d860,0x1ecd*-0x1+-0x13*-0xd7+-0x4*-0x3bb))return'E';else return'NG';}}}}}}}}function createSubjectRow(){const _0x4de797=_0x2116,_0x3b7d07={'dJayy':_0x4de797(0x153),'MLhHD':_0x4de797(0x1bf)+'w','gQazm':function(_0x295b2b,_0x289677){return _0x295b2b(_0x289677);}},_0x2f49c8=document[_0x4de797(0x136)+_0x4de797(0x14e)](_0x3b7d07[_0x4de797(0x142)]);return _0x2f49c8[_0x4de797(0x1af)]=_0x3b7d07[_0x4de797(0x196)],_0x2f49c8[_0x4de797(0x181)]=_0x4de797(0x17a)+_0x4de797(0x132)+_0x4de797(0x1a0)+_0x4de797(0x15a)+_0x4de797(0x1c6)+_0x4de797(0x1b5)+_0x4de797(0x1d9)+_0x4de797(0x1d1)+_0x4de797(0x18b)+_0x4de797(0x1df)+_0x4de797(0x1dc)+_0x4de797(0x15c)+_0x4de797(0x1b0)+_0x4de797(0x15d)+_0x4de797(0x1df)+_0x4de797(0x1c7)+_0x4de797(0x1c4)+_0x4de797(0x1d4)+_0x4de797(0x161)+_0x4de797(0x19e)+_0x4de797(0x1df)+_0x4de797(0x1df)+_0x4de797(0x13e)+_0x4de797(0x1c8)+_0x4de797(0x1b8)+_0x4de797(0x12e)+_0x4de797(0x1a1)+_0x4de797(0x154)+_0x4de797(0x1a4)+_0x4de797(0x1df)+_0x4de797(0x166)+_0x4de797(0x18e)+_0x4de797(0x12f)+_0x4de797(0x1e1)+_0x4de797(0x1df)+_0x4de797(0x139)+_0x4de797(0x140)+_0x4de797(0x158)+_0x4de797(0x141)+_0x4de797(0x1df)+_0x4de797(0x1df)+'\x20'+_0x3b7d07[_0x4de797(0x16a)](generateOptions,gradeMappings[_0x4de797(0x18d)+_0x4de797(0x164)+'al'])+(_0x4de797(0x17a)+_0x4de797(0x1df)+_0x4de797(0x15e)+_0x4de797(0x17a)+_0x4de797(0x1df)+_0x4de797(0x1b6)+_0x4de797(0x173)+_0x4de797(0x159)+_0x4de797(0x197)+_0x4de797(0x1ad)+_0x4de797(0x133)+_0x4de797(0x1df)+_0x4de797(0x1df)+_0x4de797(0x130))+_0x3b7d07[_0x4de797(0x16a)](generateOptions,gradeMappings[_0x4de797(0x143)+_0x4de797(0x1be)])+(_0x4de797(0x17a)+_0x4de797(0x1df)+_0x4de797(0x15e)+_0x4de797(0x17a)+_0x4de797(0x165)+_0x4de797(0x17e)+_0x4de797(0x1aa)),_0x2f49c8;}function _0x2116(_0x5d6837,_0x2209ac){const _0x225fe7=_0x40d3();return _0x2116=function(_0x2059f2,_0x42e113){_0x2059f2=_0x2059f2-(-0x5*-0xed+-0x1*-0x2b9+-0x62c);let _0x1676fd=_0x225fe7[_0x2059f2];return _0x1676fd;},_0x2116(_0x5d6837,_0x2209ac);}function generateOptions(_0x1e7e99){const _0xa32f8a=_0x2116;let _0xea1f38='';for(const _0x23de8f in _0x1e7e99){_0xea1f38+=_0xa32f8a(0x1cd)+_0xa32f8a(0x146)+_0x23de8f+'\x22>'+_0x23de8f+_0xa32f8a(0x1d7);}return _0xea1f38;}function updateSubjectCount(){const _0x399440=_0x2116,_0x28d789={'Eqluz':_0x399440(0x194)+'ow','mboVu':_0x399440(0x152)+_0x399440(0x178)},_0x22ccb2=document[_0x399440(0x17d)+_0x399440(0x15f)](_0x28d789[_0x399440(0x191)])[_0x399440(0x19f)];document[_0x399440(0x184)+_0x399440(0x14d)](_0x28d789[_0x399440(0x131)])[_0x399440(0x1ae)+'t']=_0x22ccb2;}document[_0x1ce231(0x1cc)+_0x1ce231(0x1c2)](_0x1ce231(0x198)+_0x1ce231(0x1d8),function(){const _0x440dbd=_0x1ce231,_0x240d47={'RcqZD':_0x440dbd(0x1d0)+_0x440dbd(0x186),'luTxY':_0x440dbd(0x194)+'ow','fHCNj':_0x440dbd(0x187)+_0x440dbd(0x17c),'jrrNx':_0x440dbd(0x19a)+_0x440dbd(0x1b4),'LnYUJ':_0x440dbd(0x19c),'JuZVq':function(_0x369923,_0x394fe4){return _0x369923(_0x394fe4);},'oZYSc':_0x440dbd(0x185),'LJlVE':function(_0x35768e){return _0x35768e();},'HEWlb':function(_0x89c7be){return _0x89c7be();},'CmfPU':_0x440dbd(0x16e)+_0x440dbd(0x14f),'ypoxb':_0x440dbd(0x171),'WRPYu':_0x440dbd(0x14a)+_0x440dbd(0x195),'MPmht':function(_0x5b126d,_0x3866ba){return _0x5b126d+_0x3866ba;},'nwnKm':function(_0x15eab6,_0x495f57){return _0x15eab6(_0x495f57);},'ZfWGd':function(_0xa5c3fd,_0x1943d3){return _0xa5c3fd(_0x1943d3);},'BYgkM':_0x440dbd(0x137)+_0x440dbd(0x18f)+_0x440dbd(0x16c),'FykWo':_0x440dbd(0x1db),'PNKlF':_0x440dbd(0x174)+'e','UXoUc':_0x440dbd(0x192)+_0x440dbd(0x13c),'AMhwL':function(_0xf06c5b,_0x59f44d){return _0xf06c5b===_0x59f44d;},'qvCMh':function(_0x2b2b44,_0x3624c2){return _0x2b2b44(_0x3624c2);},'ajNTJ':_0x440dbd(0x1e0)+_0x440dbd(0x1b2)+_0x440dbd(0x1c3)+'t','KyPSF':function(_0x3bdc72,_0x5b2b15){return _0x3bdc72/_0x5b2b15;},'nRXtw':function(_0x430346,_0x28bc66){return _0x430346/_0x28bc66;},'osDPM':function(_0x412b18,_0x58cc75){return _0x412b18(_0x58cc75);},'AVona':_0x440dbd(0x145)+_0x440dbd(0x1c0),'HdKeU':function(_0x5e581e){return _0x5e581e();},'wZwXA':_0x440dbd(0x1cb),'acTbY':_0x440dbd(0x14c)+'t','iATRn':_0x440dbd(0x170),'NKjrE':_0x440dbd(0x1b7),'oWvTz':function(_0xb94e96){return _0xb94e96();},'DdhBC':_0x440dbd(0x163),'HCPrc':_0x440dbd(0x1da)},_0x26c931=document[_0x440dbd(0x184)+_0x440dbd(0x14d)](_0x240d47[_0x440dbd(0x18a)]),_0x1774e3=document[_0x440dbd(0x184)+_0x440dbd(0x14d)](_0x240d47[_0x440dbd(0x1c9)]),_0x403e72=document[_0x440dbd(0x184)+_0x440dbd(0x14d)](_0x240d47[_0x440dbd(0x19b)]),_0x2b9aac=document[_0x440dbd(0x184)+_0x440dbd(0x14d)](_0x240d47[_0x440dbd(0x13a)]);_0x240d47[_0x440dbd(0x1a5)](_0x34d989),_0x1774e3[_0x440dbd(0x1cc)+_0x440dbd(0x1c2)](_0x240d47[_0x440dbd(0x168)],_0x34d989),_0x403e72[_0x440dbd(0x1cc)+_0x440dbd(0x1c2)](_0x240d47[_0x440dbd(0x168)],_0x5e6b94),_0x2b9aac[_0x440dbd(0x1cc)+_0x440dbd(0x1c2)](_0x240d47[_0x440dbd(0x168)],_0x234f0d),_0x26c931[_0x440dbd(0x1cc)+_0x440dbd(0x1c2)](_0x240d47[_0x440dbd(0x13d)],function(_0x263894){const _0x50bc03=_0x440dbd;if(_0x263894[_0x50bc03(0x180)][_0x50bc03(0x1ab)][_0x50bc03(0x13f)](_0x240d47[_0x50bc03(0x1de)])){const _0x2a26c7=_0x263894[_0x50bc03(0x180)][_0x50bc03(0x19d)](_0x240d47[_0x50bc03(0x1b3)]),_0x1f0f7c=_0x2a26c7[_0x50bc03(0x17d)+_0x50bc03(0x160)](_0x240d47[_0x50bc03(0x162)]),_0x29b9db=_0x2a26c7[_0x50bc03(0x17d)+_0x50bc03(0x160)](_0x240d47[_0x50bc03(0x1d3)]);_0x263894[_0x50bc03(0x180)][_0x50bc03(0x177)]?(_0x29b9db[_0x50bc03(0x176)][_0x50bc03(0x183)]=_0x240d47[_0x50bc03(0x1c1)],_0x1f0f7c[_0x50bc03(0x181)]=_0x240d47[_0x50bc03(0x16d)](generateOptions,gradeMappings[_0x50bc03(0x18d)+_0x50bc03(0x1bb)])):(_0x29b9db[_0x50bc03(0x176)][_0x50bc03(0x183)]=_0x240d47[_0x50bc03(0x1a7)],_0x1f0f7c[_0x50bc03(0x181)]=_0x240d47[_0x50bc03(0x16d)](generateOptions,gradeMappings[_0x50bc03(0x18d)+_0x50bc03(0x164)+'al']));}});function _0x34d989(){const _0x245634=_0x440dbd;_0x26c931[_0x245634(0x167)+'d'](_0x240d47[_0x245634(0x1cf)](createSubjectRow)),_0x240d47[_0x245634(0x175)](updateSubjectCount);}function _0x5e6b94(){const _0x37c445=_0x440dbd,_0x18c102=document[_0x37c445(0x17d)+_0x37c445(0x15f)](_0x240d47[_0x37c445(0x1b3)]),_0x7c2c11=document[_0x37c445(0x184)+_0x37c445(0x14d)](_0x240d47[_0x37c445(0x14b)]),_0x2f6adb=document[_0x37c445(0x17d)+_0x37c445(0x160)](_0x240d47[_0x37c445(0x1ce)]),_0x6bdad0=document[_0x37c445(0x17d)+_0x37c445(0x160)](_0x240d47[_0x37c445(0x16f)]),_0x1d60b9=document[_0x37c445(0x17d)+_0x37c445(0x160)](_0x240d47[_0x37c445(0x1c5)]);let _0x38ebb5=0xe20+0x538*-0x6+0x1130,_0x278d07=0x2549+-0x191d+0x2*-0x616,_0x2d7625=0xbb+-0x1d*0xce+0x9*0x283,_0x2e3f6c='';_0x7c2c11[_0x37c445(0x181)]='',_0x18c102[_0x37c445(0x1a8)](_0x4b1764=>{const _0x25646b=_0x37c445,_0x30ba9a=_0x4b1764[_0x25646b(0x17d)+_0x25646b(0x160)](_0x240d47[_0x25646b(0x135)])[_0x25646b(0x1a6)]||_0x240d47[_0x25646b(0x1d5)],_0x588e92=_0x4b1764[_0x25646b(0x17d)+_0x25646b(0x160)](_0x240d47[_0x25646b(0x1b9)])[_0x25646b(0x177)],_0x230d53=_0x4b1764[_0x25646b(0x17d)+_0x25646b(0x160)](_0x240d47[_0x25646b(0x162)])[_0x25646b(0x1a6)],_0xbfeb64=_0x588e92?_0x4b1764[_0x25646b(0x17d)+_0x25646b(0x160)](_0x240d47[_0x25646b(0x1d3)])[_0x25646b(0x1a6)]:null;let _0x4fabcf=-0xa*0xfe+0x15*-0x19d+0x2bcd;if(_0x588e92){const _0x5b4f19=gradeMappings[_0x25646b(0x18d)+_0x25646b(0x1bb)][_0x230d53],_0x4fb469=gradeMappings[_0x25646b(0x143)+_0x25646b(0x1be)][_0xbfeb64];_0x4fabcf=_0x240d47[_0x25646b(0x189)](_0x5b4f19,_0x4fb469);}else _0x4fabcf=gradeMappings[_0x25646b(0x18d)+_0x25646b(0x164)+'al'][_0x230d53];const _0x1ba4ba=_0x240d47[_0x25646b(0x156)](totalMarksToGrade,_0x4fabcf),_0x368912=_0x240d47[_0x25646b(0x179)](totalMarksToGradePoint,_0x4fabcf);_0x38ebb5+=_0x4fabcf,_0x278d07+=_0x368912,_0x2d7625++,_0x2e3f6c+=_0x25646b(0x17a)+_0x25646b(0x1df)+_0x25646b(0x134)+_0x25646b(0x1b1)+_0x25646b(0x1d6)+_0x25646b(0x188)+_0x25646b(0x1df)+_0x25646b(0x1df)+_0x25646b(0x13b)+_0x30ba9a+(_0x25646b(0x148)+_0x25646b(0x1df)+_0x25646b(0x1df)+_0x25646b(0x17f)+'n>')+_0x4fabcf[_0x25646b(0x151)](-0x86b+0x1943+-0x5*0x35e)+(_0x25646b(0x148)+_0x25646b(0x1df)+_0x25646b(0x1df)+_0x25646b(0x17f)+'n>')+_0x1ba4ba+(_0x25646b(0x148)+_0x25646b(0x1df)+_0x25646b(0x1df)+_0x25646b(0x17f)+'n>')+_0x368912[_0x25646b(0x151)](-0x25da+-0xb2e+0x310a)+(_0x25646b(0x148)+_0x25646b(0x1df)+_0x25646b(0x1df)+_0x25646b(0x144)+_0x25646b(0x1df)+_0x25646b(0x147));});if(_0x240d47[_0x37c445(0x1a3)](_0x2d7625,0xbdb*-0x2+-0xc6a*0x1+0x2420)){_0x240d47[_0x37c445(0x1a2)](alert,_0x240d47[_0x37c445(0x18c)]);return;}const _0x5ce295=_0x240d47[_0x37c445(0x15b)](_0x38ebb5,_0x2d7625)[_0x37c445(0x151)](-0x1450+-0x3*0x2f2+0x1d28),_0x47d324=_0x240d47[_0x37c445(0x157)](_0x278d07,_0x2d7625)[_0x37c445(0x151)](0x1b43*0x1+0x14be+-0x1*0x2fff),_0x588ee8=_0x240d47[_0x37c445(0x149)](totalMarksToGrade,_0x5ce295);_0x7c2c11[_0x37c445(0x181)]=_0x2e3f6c,_0x2f6adb[_0x37c445(0x1ae)+'t']=_0x47d324,_0x6bdad0[_0x37c445(0x1ae)+'t']=_0x5ce295+'%',_0x1d60b9[_0x37c445(0x1ae)+'t']=_0x588ee8;}function _0x234f0d(){const _0xc306ef=_0x440dbd,_0x564bd6=document[_0xc306ef(0x184)+_0xc306ef(0x14d)](_0x240d47[_0xc306ef(0x18a)]),_0x114a37=document[_0xc306ef(0x184)+_0xc306ef(0x14d)](_0x240d47[_0xc306ef(0x14b)]),_0x8f6585=document[_0xc306ef(0x17d)+_0xc306ef(0x160)](_0x240d47[_0xc306ef(0x1ce)]),_0x12d6b6=document[_0xc306ef(0x17d)+_0xc306ef(0x160)](_0x240d47[_0xc306ef(0x16f)]),_0x181fd4=document[_0xc306ef(0x17d)+_0xc306ef(0x160)](_0x240d47[_0xc306ef(0x1c5)]);_0x564bd6[_0xc306ef(0x181)]='',_0x240d47[_0xc306ef(0x155)](_0x34d989),_0x114a37[_0xc306ef(0x181)]='',_0x8f6585[_0xc306ef(0x1ae)+'t']=_0x240d47[_0xc306ef(0x182)],_0x12d6b6[_0xc306ef(0x1ae)+'t']='0%',_0x181fd4[_0xc306ef(0x1ae)+'t']='NG';}});
+    </script>
+</body>
+</html>
